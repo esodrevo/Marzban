@@ -16,13 +16,15 @@ from app.models.user import UserStatus
 from app.utils.crypto import get_cert_SANs
 from config import DEBUG, XRAY_EXCLUDE_INBOUND_TAGS, XRAY_FALLBACKS_INBOUND_TAG
 
-def merge_dicts(a, b): # B will override A dictionary key and values
+
+def merge_dicts(a, b):  # B will override A dictionary key and values
     for key, value in b.items():
         if isinstance(value, dict) and key in a and isinstance(a[key], dict):
-            merge_dicts(a[key], value) # Recursively merge nested dictionaries
+            merge_dicts(a[key], value)  # Recursively merge nested dictionaries
         else:
             a[key] = value
     return a
+
 
 class XRayConfig(dict):
     def __init__(self,
@@ -235,7 +237,8 @@ class XRayConfig(dict):
                                 f"You need to provide publicKey in realitySettings of {inbound['tag']}")
 
                     try:
-                        settings['sid'] = tls_settings.get('shortIds')[0]
+                        settings['sids'] = tls_settings.get('shortIds')
+                        settings['sids'][0]  # check if there is any shortIds
                     except (IndexError, TypeError):
                         raise ValueError(
                             f"You need to define at least one shortID in realitySettings of {inbound['tag']}")
@@ -278,6 +281,7 @@ class XRayConfig(dict):
                     if isinstance(host, str):
                         settings['host'] = [host]
 
+                    settings["heartbeatPeriod"] = net_settings.get('heartbeatPeriod', 0)
                 elif net == 'grpc' or net == 'gun':
                     settings['header_type'] = ''
                     settings['path'] = net_settings.get('serviceName', '')
@@ -295,17 +299,18 @@ class XRayConfig(dict):
                     host = net_settings.get('host', '')
                     settings['host'] = [host]
 
-                elif net == 'splithttp':
+                elif net in ('splithttp', 'xhttp'):
                     settings['path'] = net_settings.get('path', '')
                     host = net_settings.get('host', '')
                     settings['host'] = [host]
-                    settings['scMaxEachPostBytes'] = net_settings.get('scMaxEachPostBytes',
-                                                                      net_settings.get('maxUploadSize', 1000000))
-                    settings['scMaxConcurrentPosts'] = net_settings.get('scMaxConcurrentPosts',
-                                                                        net_settings.get('maxConcurrentUploads', 100))
+                    settings['scMaxEachPostBytes'] = net_settings.get('scMaxEachPostBytes', 1000000)
+                    settings['scMaxConcurrentPosts'] = net_settings.get('scMaxConcurrentPosts', 100)
                     settings['scMinPostsIntervalMs'] = net_settings.get('scMinPostsIntervalMs', 30)
                     settings['xPaddingBytes'] = net_settings.get('xPaddingBytes', "100-1000")
                     settings['xmux'] = net_settings.get('xmux', {})
+                    settings["mode"] = net_settings.get("mode", "auto")
+                    settings["noGRPCHeader"] = net_settings.get("noGRPCHeader", False)
+                    settings["keepAlivePeriod"] = net_settings.get("keepAlivePeriod", 0)
 
                 elif net == 'kcp':
                     header = net_settings.get('header', {})
@@ -381,11 +386,11 @@ class XRayConfig(dict):
             grouped_data = defaultdict(list)
 
             for row in result:
-                grouped_data[row["type"]].append((
-                    row["id"],
-                    row["username"],
-                    row["settings"],
-                    [i for i in row['excluded_inbound_tags'].split(',') if i] if row['excluded_inbound_tags'] else None
+                grouped_data[row.type].append((
+                    row.id,
+                    row.username,
+                    row.settings,
+                    [i for i in row.excluded_inbound_tags.split(',') if i] if row.excluded_inbound_tags else None
                 ))
 
             for proxy_type, rows in grouped_data.items():
