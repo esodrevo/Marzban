@@ -299,18 +299,23 @@ class XRayConfig(dict):
                     host = net_settings.get('host', '')
                     settings['host'] = [host]
 
-                elif net in ('splithttp', 'xhttp'):
-                    settings['path'] = net_settings.get('path', '')
-                    host = net_settings.get('host', '')
-                    settings['host'] = [host]
-                    settings['scMaxEachPostBytes'] = net_settings.get('scMaxEachPostBytes', 1000000)
-                    settings['scMaxConcurrentPosts'] = net_settings.get('scMaxConcurrentPosts', 100)
-                    settings['scMinPostsIntervalMs'] = net_settings.get('scMinPostsIntervalMs', 30)
-                    settings['xPaddingBytes'] = net_settings.get('xPaddingBytes', "100-1000")
-                    settings['xmux'] = net_settings.get('xmux', {})
-                    settings["mode"] = net_settings.get("mode", "auto")
-                    settings["noGRPCHeader"] = net_settings.get("noGRPCHeader", False)
-                    settings["keepAlivePeriod"] = net_settings.get("keepAlivePeriod", 0)
+    elif net in ('splithttp', 'xhttp'):
+        settings['path'] = net_settings.get('path', '')
+        host = net_settings.get('host', '')
+        settings['host'] = [host]
+        settings['mode'] = net_settings.get('mode', 'auto')
+
+        # Handle the 'extra' section explicitly
+        extra_settings = net_settings.get('extra', {})
+        settings['extra'] = {
+            'headers': extra_settings.get('headers', {}),
+            'xPaddingBytes': extra_settings.get('xPaddingBytes', "100-1000"),
+            'noGRPCHeader': extra_settings.get('noGRPCHeader', False),
+            'noSSEHeader': extra_settings.get('noSSEHeader', False),
+            'scMaxEachPostBytes': extra_settings.get('scMaxEachPostBytes', 1000000),
+            'scMinPostsIntervalMs': extra_settings.get('scMinPostsIntervalMs', 30),
+            'scMaxBufferedPosts': extra_settings.get('scMaxBufferedPosts', 30),
+            'xmux': extra_settings.get('xmux', {})
 
                 elif net == 'kcp':
                     header = net_settings.get('header', {})
