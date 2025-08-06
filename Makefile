@@ -94,6 +94,11 @@ run:
 run-tui:
 	@uv run marzban-tui.py
 
+# run marzban-cli
+.PHONY: run-cli
+run-cli:
+	@uv run marzban-cli.py
+
 # Run tests
 .PHONY: test
 test:
