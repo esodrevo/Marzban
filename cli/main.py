@@ -9,7 +9,6 @@ import asyncio
 from typing import Optional
 
 import typer
-from rich.console import Console
 
 from app.db.models import UserStatus
 from cli import console

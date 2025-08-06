@@ -4,10 +4,7 @@ System CLI Module
 Handles system status and information through the command line interface.
 """
 
-import asyncio
-from typing import Optional
 
-import typer
 from rich.console import Console
 from rich.panel import Panel
 

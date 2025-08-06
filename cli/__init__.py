@@ -4,10 +4,6 @@ Marzban CLI Package
 A modern, type-safe CLI built with Typer for managing Marzban instances.
 """
 
-import asyncio
-from typing import Optional
-
-import typer
 from rich.console import Console
 from rich.table import Table
 

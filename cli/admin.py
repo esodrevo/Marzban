@@ -4,8 +4,6 @@ Admin CLI Module
 Handles admin account management through the command line interface.
 """
 
-import asyncio
-from typing import Optional
 
 import typer
 from rich.console import Console
