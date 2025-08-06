@@ -61,21 +61,22 @@
 
 ## Table of Contents
 
--   [Overview](#overview)
-    -   [Why using Marzban?](#why-using-marzban)
-        -   [Features](#features)
--   [Installation guide](#installation-guide)
--   [Configuration](#configuration)
--   [Documentation](#documentation)
--   [API](#api)
--   [Backup](#backup)
--   [Telegram Bot](#telegram-bot)
--   [Marzban CLI](#marzban-cli)
--   [Gozaroah Node](#gozargah-node)
--   [Webhook notifications](#webhook-notifications)
--   [Donation](#donation)
--   [License](#license)
--   [Contributors](#contributors)
+- [Overview](#overview)
+  - [Why using Marzban?](#why-using-marzban)
+    - [Features](#features)
+- [Installation guide](#installation-guide)
+    - [⚠️ The following commands will install the pre release versions (alpha/beta)](#️-the-following-commands-will-install-the-pre-release-versions-alphabeta)
+- [Configuration](#configuration)
+- [Documentation](#documentation)
+- [API](#api)
+- [Backup](#backup)
+- [Telegram Bot](#telegram-bot)
+- [Marzban TUI](#marzban-tui)
+- [Gozargah Node](#gozargah-node)
+- [Webhook notifications](#webhook-notifications)
+- [Donation](#donation)
+- [License](#license)
+- [Contributors](#contributors)
 
 # Overview
 
@@ -103,8 +104,9 @@ Marzban is user-friendly, feature-rich and reliable. It lets you to create diffe
 -   **TLS** and **REALITY** support
 -   Integrated **Telegram Bot**
 -   Integrated **Command Line Interface (CLI)**
+-   Integrated **Text-based User Interface (TUI)**
 -   **Multi-language**
--   **Multi-admin** support (WIP)
+-   **Multi-admin** support
 
 # Installation guide
 
@@ -156,7 +158,7 @@ You will lose access to the dashboard as soon as you close the SSH terminal. The
 Next, you need to create a sudo admin for logging into the Marzban dashboard by the following command
 
 ```bash
-marzban cli admin create --sudo
+marzban tui admin create --sudo
 ```
 
 That's it! You can login to your dashboard using these credentials
@@ -197,12 +199,12 @@ Then run the following command to run the database migration scripts
 uv run alembic upgrade head
 ```
 
-If you want to use `marzban-cli`, you should link it to a file in your `$PATH`, make it executable, and install the auto-completion:
+If you want to use `marzban-tui`, you should link it to a file in your `$PATH`, make it executable, and install the auto-completion:
 
 ```bash
-sudo ln -s $(pwd)/marzban-cli.py /usr/bin/marzban-cli
-sudo chmod +x /usr/bin/marzban-cli
-marzban-cli completion install
+sudo ln -s $(pwd)/marzban-tui.py /usr/bin/marzban-tui
+sudo chmod +x /usr/bin/marzban-tui
+marzban-tui completion install
 ```
 
 Now it's time to configuration
@@ -373,17 +375,17 @@ To enable Telegram Bot:
 1. set `TELEGRAM_API_TOKEN` to your bot's API Token
 2. set `TELEGRAM_ADMIN_ID` to your Telegram account's numeric ID, you can get your ID from [@userinfobot](https://t.me/userinfobot)
 
-# Marzban CLI
+# Marzban TUI
 
-Marzban comes with an integrated CLI named `marzban-cli` which allows administrators to have direct interaction with it.
+Marzban comes with an integrated TUI named `marzban-tui` which allows administrators to have direct interaction with it.
 
-If you've installed Marzban using easy install script, you can access the cli commands by running
+If you've installed Marzban using easy install script, you can access the tui commands by running
 
 ```bash
-marzban cli [OPTIONS] COMMAND [ARGS]...
+marzban tui [OPTIONS] COMMAND [ARGS]...
 ```
 
-For more information, You can read [Marzban CLI's documentation](./cli/README.md).
+For more information, You can read [Marzban TUI's documentation](./tui/README.md).
 
 # Gozargah Node
 

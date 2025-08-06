@@ -1,4 +1,4 @@
-# Marzban CLI
+# Marzban TUI
 
 A modern, interactive command-line interface for managing Marzban, built with Textual.
 
@@ -13,10 +13,10 @@ A modern, interactive command-line interface for managing Marzban, built with Te
 
 ## Usage
 
-### Starting the CLI
+### Starting the TUI
 
 ```bash
-marzban cli
+marzban tui
 ```
 
 ### Keyboard Shortcuts

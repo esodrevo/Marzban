@@ -89,10 +89,10 @@ run-migration:
 run:
 	@uv run main.py
 	
-# run marzban-cli
-.PHONY: run-cli
-run-cli:
-	@uv run marzban-cli.py
+# run marzban-tui
+.PHONY: run-tui
+run-tui:
+	@uv run marzban-tui.py
 
 # Run tests
 .PHONY: test

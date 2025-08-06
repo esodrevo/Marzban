@@ -85,20 +85,24 @@ Marzban 是一个用户友好、功能丰富且可靠的工具。它让您可以
 ### 特性
 
 - 内置 **Web 界面**
-- 完全支持 **REST API** 的后端
+- 完全 **REST API** 后端
+- [**多节点**](#Gozargah-node) 支持（用于基础设施分布和可扩展性）
 - 支持 **Vmess**、**VLESS**、**Trojan** 和 **Shadowsocks** 协议
 - 单用户的**多协议**支持
 - 单入站的**多用户**支持
-- 单端口的**多入站**支持（使用 fallbacks）
+- 单端口的**多入站**支持（支持 fallbacks）
 - **流量**和**过期日期**限制
-- 周期性的流量限制（例如每天、每周等）
-- 兼容 **V2ray** 的**订阅链接**（例如 V2RayNG、SingBox、Nekoray 等）和 **Clash**
+- **周期性**流量限制（例如每天、每周等）
+- 兼容 **V2ray**（如 V2RayNG、SingBox、Nekoray 等）、**Clash** 和 **ClashMeta** 的**订阅链接**
 - 自动化的**分享链接**和**二维码**生成器
 - 系统监控和**流量统计**
 - 可自定义的 xray 配置
-- **TLS** 支持
+- **TLS** 和 **REALITY** 支持
 - 集成的 **Telegram Bot**
-- **多管理员**支持（WIP）
+- 集成的 **命令行界面（CLI）**
+- 集成的 **文本用户界面（TUI）**
+- **多语言**
+- **多管理员**支持
 
 # 安装指南
 
@@ -142,7 +146,7 @@ You will lose access to the dashboard as soon as you close the SSH terminal. The
 Next, you need to create a sudo admin for logging into the Marzban dashboard by the following command
 
 ```bash
-marzban cli admin create --sudo
+marzban tui admin create --sudo
 ```
 
 That's it! You can login to your dashboard using these credentials

@@ -31,7 +31,7 @@ class AdminOperation(BaseOperation):
         except IntegrityError:
             await self.raise_error(message="Admin already exists", code=409, db=db)
 
-        if self.operator_type != OperatorType.CLI:
+        if self.operator_type != OperatorType.SYS:
             logger.info(f'New admin "{db_admin.username}" with id "{db_admin.id}" added by admin "{admin.username}"')
         new_admin = AdminDetails.model_validate(db_admin)
         asyncio.create_task(notification.create_admin(new_admin, admin.username))
@@ -43,14 +43,14 @@ class AdminOperation(BaseOperation):
     ) -> AdminDetails:
         """Modify an existing admin's details."""
         db_admin = await self.get_validated_admin(db, username=username)
-        if self.operator_type != OperatorType.CLI and db_admin.username == current_admin.username and db_admin.is_sudo:
+        if self.operator_type != OperatorType.SYS and db_admin.username == current_admin.username and db_admin.is_sudo:
             await self.raise_error(
-                message="You're not allowed to edit another sudoer's account. Use marzban-cli instead.", code=403
+                message="You're not allowed to edit another sudoer's account. Use marzban-tui instead.", code=403
             )
 
         db_admin = await update_admin(db, db_admin, modified_admin)
 
-        if self.operator_type != OperatorType.CLI:
+        if self.operator_type != OperatorType.SYS:
             logger.info(
                 f'Admin "{db_admin.username}" with id "{db_admin.id}" modified by admin "{current_admin.username}"'
             )
@@ -63,16 +63,16 @@ class AdminOperation(BaseOperation):
         """Remove an admin from the database."""
         db_admin = await self.get_validated_admin(db, username=username)
         if (
-            self.operator_type != OperatorType.CLI
+            self.operator_type != OperatorType.SYS
             and (db_admin.username == current_admin.username)
             and db_admin.is_sudo
         ):
             await self.raise_error(
-                message="You're not allowed to delete sudoer's account. Use marzban-cli instead.", code=403
+                message="You're not allowed to delete sudoer's account. Use marzban-tui instead.", code=403
             )
 
         await remove_admin(db, db_admin)
-        if self.operator_type != OperatorType.CLI:
+        if self.operator_type != OperatorType.SYS:
             logger.info(
                 f'Admin "{db_admin.username}" with id "{db_admin.id}" deleted by admin "{current_admin.username}"'
             )
@@ -117,7 +117,7 @@ class AdminOperation(BaseOperation):
         db_admin = await self.get_validated_admin(db, username=username)
 
         db_admin = await reset_admin_usage(db, db_admin=db_admin)
-        if self.operator_type != OperatorType.CLI:
+        if self.operator_type != OperatorType.SYS:
             logger.info(f'Admin "{username}" usage has been reset by admin "{admin.username}"')
 
         reseted_admin = AdminDetails.model_validate(db_admin)

@@ -26,7 +26,7 @@ class OperatorType(IntEnum):
     SYSTEM = 0
     API = 1
     WEB = 2
-    CLI = 3
+    SYS = 3
     TELEGRAM = 4
     DISCORD = 5
 

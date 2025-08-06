@@ -45,7 +45,7 @@ No need to ask for permission!
 ```text
 .
 ├── app          # Backend code (FastAPI - Python)
-├── cli          # CLI code (Typer - Python)
+├── tui          # TUI code (Textual - Python)
 ├── dashboard    # Frontend code (React - TypeScript)
 └── tests        # API tests
 ```
@@ -114,11 +114,11 @@ Remove the `dashboard/build` directory and restart the Python backend — the fr
 
 ---
 
-## 🛠️ Marzban CLI
+## 🛠️ Marzban TUI
 
-Marzban’s CLI is built using [Textual](https://textual.textualize.io/).
+Marzban's TUI is built using [Textual](https://textual.textualize.io/).
 
-* CLI codebase: `cli/`
+* TUI codebase: `tui/`
 
 ---
 

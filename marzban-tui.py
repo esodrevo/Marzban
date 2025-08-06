@@ -2,14 +2,14 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Footer, Header
 
-from cli.help import HelpModal
 from config import DEBUG
+from tui.help import HelpModal
 
 
-class MarzbanCLI(App):
+class MarzbanTUI(App):
     """A Textual app to manage marzban"""
 
-    CSS_PATH = "cli/style.tcss"
+    CSS_PATH = "tui/style.tcss"
     ENABLE_COMMAND_PALETTE = DEBUG
 
     def __init__(self, *args, **kwargs) -> None:
@@ -24,7 +24,7 @@ class MarzbanCLI(App):
 
     def compose(self) -> ComposeResult:
         """Create child widgets for the app."""
-        from cli.admin import AdminContent
+        from tui.admin import AdminContent
 
         yield Header()
         yield AdminContent(id="admin-content")
@@ -49,5 +49,5 @@ class MarzbanCLI(App):
 
 
 if __name__ == "__main__":
-    app = MarzbanCLI()
+    app = MarzbanTUI()
     app.run()

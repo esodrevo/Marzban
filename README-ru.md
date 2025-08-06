@@ -70,7 +70,7 @@
 - [API](#api)
 - [Backup](#backup)
 - [Telegram Bot](#telegram-bot)
-- [Marzban CLI](#marzban-cli)
+- [Marzban TUI](#marzban-tui)
 - [Marzban Node](#marzban-node)
 - [Webhook уведомления](#webhook-уведомления)
 - [Поддержка](#поддержка)
@@ -103,8 +103,9 @@ Marzban удобен в использовании, многофункциона
 - Поддержка **TLS** и **REALITY**
 - Встроенный **Telegram Bot**
 - Встроенный **Command Line Interface (CLI)**
+- **Интегрированный текстовый пользовательский интерфейс (TUI)**
 - **Несколько языков**
-- Поддержка **Нескольких администраторов** (WIP)
+- Поддержка **Нескольких администраторов**
 
 # Руководство по установке
 
@@ -148,7 +149,7 @@ http://localhost:8000/dashboard/
 Далее, Вам нужно создать главного администратора для входа в панель управления Marzban, выполнив следующую команду:
 
 ```bash
-marzban cli admin create --sudo
+marzban tui admin create --sudo
 ```
 
 Готово! Теперь Вы можете войти, используя данные своей учетной записи.
@@ -189,12 +190,12 @@ uv sync
 uv run alembic upgrade head
 ```
 
-Если Вы хотите использовать `marzban-cli`, необходимо связать его с файлом в `$PATH`, сделать его исполняемым и установить:
+Если Вы хотите использовать `marzban-tui`, необходимо связать его с файлом в `$PATH`, сделать его исполняемым и установить:
 
 ```bash
-sudo ln -s $(pwd)/marzban-cli.py /usr/bin/marzban-cli
-sudo chmod +x /usr/bin/marzban-cli
-marzban-cli completion install
+sudo ln -s $(pwd)/marzban-tui.py /usr/bin/marzban-tui
+sudo chmod +x /usr/bin/marzban-tui
+marzban-tui completion install
 ```
 
 Теперь настало время настройки.
@@ -375,17 +376,17 @@ marzban backup-service
 marzban backup
 ```
 
-# Marzban CLI
+# Marzban TUI
 
-Marzban поставляется с встроенным CLI под названием `marzban-cli`, который позволяет администраторам напрямую взаимодействовать с ним.
+Marzban поставляется с встроенным TUI под названием `marzban-tui`, который позволяет администраторам напрямую взаимодействовать с ним.
 
-Если вы установили Marzban с помощью скрипта установки, то доступ к командам cli можно получить, выполнив команду:
+Если вы установили Marzban с помощью скрипта установки, то доступ к командам tui можно получить, выполнив команду:
 
 ```bash
-marzban cli [OPTIONS] COMMAND [ARGS]...
+marzban tui [OPTIONS] COMMAND [ARGS]...
 ```
 
-Для получения дополнительной информации можно ознакомиться с [документацией по Marzban CLI](./cli/README.md).
+Для получения дополнительной информации можно ознакомиться с [документацией по Marzban TUI](./tui/README.md).
 
 # Marzban Node
 
