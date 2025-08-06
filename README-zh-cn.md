@@ -70,6 +70,7 @@
 - [如何使用 API](#如何使用-api)
 - [如何备份 Marzban](#如何备份-marzban)
 - [Telegram bot](#telegram-bot)
+- [Marzban CLI & TUI](#marzban-cli--tui)
 - [捐赠](#捐赠)
 - [许可](#许可)
 - [贡献者](#贡献者)
@@ -365,6 +366,51 @@ Marzban 配备了一个集成的 Telegram bot，可以处理服务器管理、�
 
 1. 将 `TELEGRAM_API_TOKEN` 设置为您的 bot API Token。
 2. 将 `TELEGRAM_ADMIN_ID` 设置为您的 Telegram ID，您可以从 [@userinfobot](https://t.me/userinfobot) 中获取自己的 ID。
+
+# Marzban CLI & TUI
+
+Marzban 为管理员提供了两个强大的命令行界面：
+
+## Marzban CLI
+
+Marzban 包含一个使用 Typer 构建的现代、类型安全的 CLI，提供丰富的输出和美观的表格。CLI 允许您从命令行管理 Marzban，具有以下功能：
+
+- **管理员管理**：创建、修改、删除和列出管理员账户
+- **用户管理**：使用各种过滤器和分页列出用户
+- **节点管理**：列出节点
+- **系统信息**：监控系统状态和统计信息
+
+如果您使用简易安装脚本安装了 Marzban，可以通过运行以下命令访问 CLI 命令：
+
+```bash
+marzban cli [OPTIONS] COMMAND [ARGS]...
+```
+
+## Marzban TUI
+
+Marzban 还包含一个名为 `marzban-tui` 的集成文本用户界面（TUI），它提供了一个使用 Textual 构建的交互式、现代命令行界面。TUI 提供：
+
+- **交互式界面**：现代、响应式设计，支持深色模式
+- **键盘快捷键**：快速导航和命令
+- **实时更新**：实时数据更新和监控
+- **丰富的可视化**：美观的表格和数据展示
+
+如果您使用简易安装脚本安装了 Marzban，可以通过运行以下命令访问 TUI：
+
+```bash
+marzban tui [OPTIONS] COMMAND [ARGS]...
+```
+
+### TUI 功能
+
+- **管理员管理**：创建、修改、删除和管理管理员账户
+- **用户管理**：查看和管理用户账户
+- **系统监控**：实时系统状态和统计信息
+- **交互式导航**：易于使用的键盘快捷键
+
+有关更详细的信息，您可以阅读：
+- [Marzban CLI 文档](./cli/README.md)
+- [Marzban TUI 文档](./tui/README.md)
 
 # 捐赠
 

@@ -71,7 +71,10 @@
 - [API](#api)
 - [Backup](#backup)
 - [Telegram Bot](#telegram-bot)
-- [Marzban TUI](#marzban-tui)
+- [Marzban CLI \& TUI](#marzban-cli--tui)
+  - [Marzban CLI](#marzban-cli)
+  - [Marzban TUI](#marzban-tui)
+    - [TUI Features](#tui-features)
 - [Gozargah Node](#gozargah-node)
 - [Webhook notifications](#webhook-notifications)
 - [Donation](#donation)
@@ -375,17 +378,50 @@ To enable Telegram Bot:
 1. set `TELEGRAM_API_TOKEN` to your bot's API Token
 2. set `TELEGRAM_ADMIN_ID` to your Telegram account's numeric ID, you can get your ID from [@userinfobot](https://t.me/userinfobot)
 
-# Marzban TUI
+# Marzban CLI & TUI
 
-Marzban comes with an integrated TUI named `marzban-tui` which allows administrators to have direct interaction with it.
+Marzban comes with two powerful command-line interfaces for administrators:
 
-If you've installed Marzban using easy install script, you can access the tui commands by running
+## Marzban CLI
+
+Marzban includes a modern, type-safe CLI built with Typer that provides rich output and beautiful tables. The CLI allows you to manage Marzban from the command line with features like:
+
+- **Admin Management**: Create, modify, delete, and list admin accounts
+- **User Management**: List users with various filters and pagination
+- **Node Management**: List nodes
+- **System Information**: Monitor system status and statistics
+
+If you've installed Marzban using the easy install script, you can access the CLI commands by running:
+
+```bash
+marzban cli [OPTIONS] COMMAND [ARGS]...
+```
+
+## Marzban TUI
+
+Marzban also includes an integrated Text User Interface (TUI) named `marzban-tui` which provides an interactive, modern command-line interface built with Textual. The TUI offers:
+
+- **Interactive Interface**: Modern, responsive design with dark mode support
+- **Keyboard Shortcuts**: Quick navigation and commands
+- **Real-time Updates**: Live data updates and monitoring
+- **Rich Visualization**: Beautiful tables and data presentation
+
+If you've installed Marzban using the easy install script, you can access the TUI by running:
 
 ```bash
 marzban tui [OPTIONS] COMMAND [ARGS]...
 ```
 
-For more information, You can read [Marzban TUI's documentation](./tui/README.md).
+### TUI Features
+
+- **Admin Management**: Create, modify, delete, and manage admin accounts
+- **User Management**: View and manage user accounts
+- **System Monitoring**: Real-time system status and statistics
+- **Interactive Navigation**: Easy-to-use keyboard shortcuts
+
+For more detailed information, you can read:
+- [Marzban CLI documentation](./cli/README.md)
+- [Marzban TUI documentation](./tui/README.md)
 
 # Gozargah Node
 
