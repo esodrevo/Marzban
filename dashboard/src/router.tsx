@@ -279,14 +279,14 @@ export const router = createHashRouter([
           },
         ],
       },
-      {
-        path: 'theme',
-        element: (
-          <Suspense fallback={<LoadingSpinner />}>
-            <ThemePage />
-          </Suspense>
-        ),
-      },
+      // {
+      //   path: 'theme',
+      //   element: (
+      //     <Suspense fallback={<LoadingSpinner />}>
+      //       <ThemePage />
+      //     </Suspense>
+      //   ),
+      // },
     ],
   },
   {
