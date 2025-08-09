@@ -3,7 +3,7 @@ import GroupsSelector from '@/components/common/GroupsSelector'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { LoaderButton } from '@/components/ui/loader-button'
@@ -31,13 +31,14 @@ import { dateUtils, useRelativeExpiryDate } from '@/utils/dateFormatter'
 import { formatBytes } from '@/utils/formatByte'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { CalendarIcon, Layers, ListStart, Lock, RefreshCcw, Users, X } from 'lucide-react'
-import React, { useEffect, useState, useTransition } from 'react'
+import React, { useEffect, useMemo, useState, useTransition } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { v4 as uuidv4, v5 as uuidv5, v7 as uuidv7 } from 'uuid'
 import { z } from 'zod'
-
+import { Tooltip, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
+import { TooltipTrigger } from '@radix-ui/react-tooltip'
 
 interface UserModalProps {
   isDialogOpen: boolean
@@ -174,7 +175,7 @@ const ExpiryDateField = ({
   )
 
   // Get current date for comparison
-  const now = new Date()
+  const now = useMemo(() => new Date(), [])
 
   // Function to check if a date should be disabled
   const isDateDisabled = React.useCallback(
@@ -217,7 +218,7 @@ const ExpiryDateField = ({
   )
 
   return (
-    <FormItem className="flex flex-1 flex-col">
+    <FormItem className="flex flex-1 flex-col gap-2">
       <FormLabel>{label}</FormLabel>
       <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
         <PopoverTrigger asChild>
@@ -226,7 +227,7 @@ const ExpiryDateField = ({
               <Button
                 dir={'ltr'}
                 variant={'outline'}
-                className={cn('!mt-3.5 h-fit w-full text-left font-normal', !field.value && 'text-muted-foreground')}
+                className={cn('h-fit w-full border-border bg-input text-left font-normal', !field.value && 'text-muted-foreground')}
                 type="button"
                 onClick={e => {
                   e.preventDefault()
@@ -392,7 +393,6 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
   const isPersianLocale = i18n.language === 'fa'
   const [usePersianCalendar, setUsePersianCalendar] = useState(isPersianLocale)
 
-
   // Reset calendar state when modal opens/closes
   useEffect(() => {
     if (!isDialogOpen) {
@@ -408,7 +408,6 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
       if (!open) {
         form.reset()
         setTouchedFields({})
-        setIsFormValid(false)
       }
       onOpenChange(open)
     },
@@ -601,7 +600,8 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
       const duration = form.getValues('on_hold_expire_duration')
       const touched = touchedFields['on_hold_expire_duration']
       // Only set default if the field hasn't been touched by user and has no value
-      if (!touched && (!duration || duration < 1)) {        const defaultDuration = 30 * 24 * 60 * 60 // 7 days in seconds
+      if (!touched && (!duration || duration < 1)) {
+        const defaultDuration = 30 * 24 * 60 * 60 // 7 days in seconds
         form.setValue('on_hold_expire_duration', defaultDuration)
         handleFieldChange('on_hold_expire_duration', defaultDuration)
       }
@@ -682,8 +682,8 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
 
       // Only validate fields that have been touched
       const fieldsToValidate = isSubmit
-          ? currentValues
-          : Object.keys(touchedFields).reduce((acc, key) => {
+        ? currentValues
+        : Object.keys(touchedFields).reduce((acc, key) => {
             if (touchedFields[key]) {
               acc[key] = currentValues[key]
             }
@@ -946,9 +946,9 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
 
   // Helper for cryptographically secure random integer
   function getRandomInt(max: number): number {
-    const array = new Uint32Array(1);
-    window.crypto.getRandomValues(array);
-    return array[0] % max;
+    const array = new Uint32Array(1)
+    window.crypto.getRandomValues(array)
+    return array[0] % max
   }
 
   function generateUsername() {
@@ -1037,7 +1037,6 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
     }
   }, [isDialogOpen, form, editingUser, status])
 
-
   // State for UUID version per field
   const [uuidVersions, setUuidVersions] = useState({
     vmess: 'v4',
@@ -1084,22 +1083,35 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
   }, [i18n.language])
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={handleModalOpenChange}>
-      <DialogContent className={`lg:min-w-[900px] ${editingUser ? 'h-full sm:h-auto' : 'h-auto'}`}>
-        <DialogHeader>
-          <DialogTitle className={`${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-            {editingUser ? t('userDialog.editUser', { defaultValue: 'Edit User' }) : t('createUser', { defaultValue: 'Create User' })}
-          </DialogTitle>
-        </DialogHeader>
+    <Sheet open={isDialogOpen} onOpenChange={handleModalOpenChange}>
+      <SheetContent
+        className={cn(`flex flex-col overflow-auto p-4 md:min-w-[500px]`, {
+          'h-full sm:h-auto': editingUser,
+          'h-auto': !editingUser,
+        })}
+      >
+        <div className="flex flex-col gap-2">
+          <SheetHeader>
+            <SheetTitle className={`${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+              {editingUser ? t('userDialog.editUser', { defaultValue: 'Edit User' }) : t('createUser', { defaultValue: 'Create User' })}
+            </SheetTitle>
+          </SheetHeader>
+          <div className="flex">
+            <Button onClick={setActiveTab.bind(null, activeTab === 'groups' ? 'templates' : 'groups')} variant="link" size="sm" className="h-auto p-0 text-sm font-light text-white opacity-60">
+              Create from {(activeTab === 'groups' ? t('templates.title') : t('groups')).toLowerCase()}
+            </Button>
+          </div>
+        </div>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="-mr-4 max-h-[80dvh] overflow-y-auto px-2 pr-4 sm:max-h-[75dvh]">
-              <div className="flex w-full flex-col items-center justify-between gap-6 lg:flex-row lg:items-start lg:pb-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="gay-4 flex flex-grow flex-col">
+            <div className="flex-grow overflow-visible pt-4">
+              <div className="flex w-full flex-col items-center justify-between gap-6 lg:items-start lg:pb-8">
                 <div className="w-full flex-[2] space-y-6">
                   <div className="flex w-full items-center justify-center gap-4">
                     {/* Hide these fields if a template is selected */}
                     {!selectedTemplateId && (
-                      <div className={'flex w-full gap-4'}>
+                      <div className={'grid w-full grid-cols-2 gap-4'}>
                         <FormField
                           control={form.control}
                           name="username"
@@ -1109,7 +1121,7 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
                               <FormItem className="flex-1">
                                 <FormLabel>{t('username', { defaultValue: 'Username' })}</FormLabel>
                                 <FormControl>
-                                  <div className="flex items-center gap-2">
+                                  <div className="relative flex items-center gap-2">
                                     <div className="w-full">
                                       <Input
                                         placeholder={t('admins.enterUsername', { defaultValue: 'Enter username' })}
@@ -1125,21 +1137,36 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
                                       />
                                     </div>
                                     {!editingUser && (
-                                      <Button
-                                        size="icon"
-                                        type="button"
-                                        variant="ghost"
-                                        onClick={e => {
-                                          e.preventDefault()
-                                          e.stopPropagation()
-                                          const newUsername = generateUsername()
-                                          field.onChange(newUsername)
-                                          handleFieldChange('username', newUsername)
-                                        }}
-                                        title="Generate username"
-                                      >
-                                        <RefreshCcw className="h-3 w-3" />
-                                      </Button>
+                                      <TooltipProvider delayDuration={0}>
+                                        <Tooltip>
+                                          <TooltipContent
+                                            onPointerDownOutside={event => {
+                                              event.preventDefault()
+                                            }}
+                                          >
+                                            Generate username
+                                          </TooltipContent>
+                                          <TooltipTrigger asChild onPointerDown={event => event.preventDefault()}>
+                                            <Button
+                                              size="icon"
+                                              tabIndex={-1}
+                                              type="button"
+                                              variant="ghost"
+                                              onClick={e => {
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                                const newUsername = generateUsername()
+                                                field.onChange(newUsername)
+                                                handleFieldChange('username', newUsername)
+                                              }}
+                                              title="Generate username"
+                                              className="absolute right-1"
+                                            >
+                                              <RefreshCcw className="h-3 w-3" />
+                                            </Button>
+                                          </TooltipTrigger>
+                                        </Tooltip>
+                                      </TooltipProvider>
                                     )}
                                   </div>
                                 </FormControl>
@@ -1153,7 +1180,7 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
                             control={form.control}
                             name="status"
                             render={({ field }) => (
-                              <FormItem className="w-1/3">
+                              <FormItem>
                                 <FormLabel>{t('status', { defaultValue: 'Status' })}</FormLabel>
                                 <FormControl>
                                   <Select
@@ -1235,7 +1262,7 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
                   </div>
                   {/* Data limit and expire fields - show data_limit only when no template is selected */}
                   {activeTab === 'groups' && (
-                    <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-start">
+                    <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
                       {!selectedTemplateId && (
                         <>
                           <FormField
@@ -1251,7 +1278,7 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
                                     min="0"
                                     placeholder={t('userDialog.dataLimit', { defaultValue: 'e.g. 1' })}
                                     {...field}
-                                    value={field.value ? field.value : '' }
+                                    value={field.value ? field.value : ''}
                                     onChange={e => {
                                       const value = e.target.value === '' ? 0 : parseFloat(e.target.value)
                                       if (!isNaN(value) && value >= 0) {
@@ -1305,70 +1332,68 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
                           )}
                         </>
                       )}
-                      <div className="flex items-start gap-4 lg:w-52">
+                      <div className="flex items-start gap-4">
                         {status === 'on_hold' ? (
-                            <FormField
-                                control={form.control}
-                                name="on_hold_expire_duration"
-                                render={({ field }) => {
-                                  const hasError = !!form.formState.errors.on_hold_expire_duration
-                                  const fieldValue = field.value ? Math.round(field.value / (24 * 60 * 60)): ''
-                                  const isZeroOrEmpty = fieldValue === 0 || fieldValue === ''
-                                  const isTouched = touchedFields['on_hold_expire_duration']
+                          <FormField
+                            control={form.control}
+                            name="on_hold_expire_duration"
+                            render={({ field }) => {
+                              const hasError = !!form.formState.errors.on_hold_expire_duration
+                              const fieldValue = field.value ? Math.round(field.value / (24 * 60 * 60)) : ''
+                              const isZeroOrEmpty = fieldValue === 0 || fieldValue === ''
+                              const isTouched = touchedFields['on_hold_expire_duration']
 
-                                  return (
-                                      <FormItem className="flex-1">
-                                        <FormLabel>{t('userDialog.onHoldExpireDuration', { defaultValue: 'On Hold Expire Duration (days)' })}</FormLabel>
-                                        <FormControl>
-                                          <Input
-                                              type="number"
-                                              min="1"
-                                              isError={hasError || (isTouched && isZeroOrEmpty)}
-                                              placeholder={t('userDialog.onHoldExpireDurationPlaceholder', { defaultValue: 'e.g. 7' })}
-                                              {...field}
-                                              value={fieldValue ? fieldValue : ''}
-                                              onChange={e => {
-                                                // Allow empty string for deletion
-                                                if (e.target.value === '') {
-                                                  field.onChange(0)
-                                                  handleFieldChange('on_hold_expire_duration', 0)
-                                                  // Mark field as touched to prevent auto-default
-                                                  setTouchedFields(prev => ({ ...prev, on_hold_expire_duration: true }))
-                                                } else {
-                                                  const value = parseInt(e.target.value, 10)
-                                                  if (!isNaN(value) && value >= 0) {
-                                                    field.onChange(value ? value * (24 * 60 * 60) : 0)
-                                                    handleFieldChange('on_hold_expire_duration', value)
-                                                    // Mark field as touched
-                                                    setTouchedFields(prev => ({ ...prev, on_hold_expire_duration: true }))
-                                                  }
-                                                }
-                                              }}
-                                              onBlur={() => {
-                                                handleFieldBlur('on_hold_expire_duration')
-                                                // Set validation error if value is 0 or empty
-                                                if (fieldValue === 0 || fieldValue === '') {
-                                                  form.setError('on_hold_expire_duration', {
-                                                    type: 'manual',
-                                                    message: t('validation.required', { field: t('userDialog.onHoldExpireDuration', { defaultValue: 'On Hold Expire Duration' }) }),
-                                                  })
-                                                } else {
-                                                  // Clear error if value is valid
-                                                  form.clearErrors('on_hold_expire_duration')
-                                                }
-                                              }}
-                                          />
-                                        </FormControl>
-                                        <FormMessage />
-                                        {isTouched && isZeroOrEmpty && !hasError && (
-                                            <p className="text-sm text-destructive">
-                                              {t('validation.required', { field: t('userDialog.onHoldExpireDuration', { defaultValue: 'On Hold Expire Duration' }) })}
-                                            </p>
-                                        )}
-                                      </FormItem>
-                                  )
-                                }}
-                            />
+                              return (
+                                <FormItem className="flex-1">
+                                  <FormLabel>{t('userDialog.onHoldExpireDuration', { defaultValue: 'On Hold Expire Duration (days)' })}</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      min="1"
+                                      isError={hasError || (isTouched && isZeroOrEmpty)}
+                                      placeholder={t('userDialog.onHoldExpireDurationPlaceholder', { defaultValue: 'e.g. 7' })}
+                                      {...field}
+                                      value={fieldValue ? fieldValue : ''}
+                                      onChange={e => {
+                                        // Allow empty string for deletion
+                                        if (e.target.value === '') {
+                                          field.onChange(0)
+                                          handleFieldChange('on_hold_expire_duration', 0)
+                                          // Mark field as touched to prevent auto-default
+                                          setTouchedFields(prev => ({ ...prev, on_hold_expire_duration: true }))
+                                        } else {
+                                          const value = parseInt(e.target.value, 10)
+                                          if (!isNaN(value) && value >= 0) {
+                                            field.onChange(value ? value * (24 * 60 * 60) : 0)
+                                            handleFieldChange('on_hold_expire_duration', value)
+                                            // Mark field as touched
+                                            setTouchedFields(prev => ({ ...prev, on_hold_expire_duration: true }))
+                                          }
+                                        }
+                                      }}
+                                      onBlur={() => {
+                                        handleFieldBlur('on_hold_expire_duration')
+                                        // Set validation error if value is 0 or empty
+                                        if (fieldValue === 0 || fieldValue === '') {
+                                          form.setError('on_hold_expire_duration', {
+                                            type: 'manual',
+                                            message: t('validation.required', { field: t('userDialog.onHoldExpireDuration', { defaultValue: 'On Hold Expire Duration' }) }),
+                                          })
+                                        } else {
+                                          // Clear error if value is valid
+                                          form.clearErrors('on_hold_expire_duration')
+                                        }
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                  {isTouched && isZeroOrEmpty && !hasError && (
+                                    <p className="text-sm text-destructive">{t('validation.required', { field: t('userDialog.onHoldExpireDuration', { defaultValue: 'On Hold Expire Duration' }) })}</p>
+                                  )}
+                                </FormItem>
+                              )
+                            }}
+                          />
                         ) : (
                           <FormField
                             control={form.control}
@@ -1430,18 +1455,17 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
                     )}
                   />
 
-
                   {/* Proxy Settings Accordion */}
                   {activeTab === 'groups' && (
                     <Accordion type="single" collapsible className="my-4 w-full">
-                      <AccordionItem className="rounded-sm border px-4 [&_[data-state=closed]]:no-underline [&_[data-state=open]]:no-underline" value="proxySettings">
-                        <AccordionTrigger>
+                      <AccordionItem className="rounded-sm border [&_[data-state=closed]]:no-underline [&_[data-state=open]]:no-underline" value="proxySettings">
+                        <AccordionTrigger className="px-4">
                           <div className="flex items-center gap-2">
                             <Lock className="h-4 w-4" />
                             <span>{t('userDialog.proxySettingsAccordion')}</span>
                           </div>
                         </AccordionTrigger>
-                        <AccordionContent className="px-2">
+                        <AccordionContent className="mt-1 px-4">
                           <div className="mb-2 flex items-center justify-between">
                             <div className="text-xs text-muted-foreground">{t('userDialog.proxySettings.desc')}</div>
                             <GenerateProxySettingsButton />
@@ -1812,7 +1836,7 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
                               control={form.control}
                               name="next_plan.add_remaining_traffic"
                               render={({ field }) => (
-                                  <FormItem className="flex flex-row items-center justify-between w-full">
+                                <FormItem className="flex w-full flex-row items-center justify-between">
                                   <FormLabel>{t('userDialog.nextPlanAddRemainingTraffic', { defaultValue: 'Add Remaining Traffic' })}</FormLabel>
                                   <Switch checked={!!field.value} onCheckedChange={field.onChange} />
                                   <FormMessage />
@@ -1924,9 +1948,8 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
             </div>
           </form>
         </Form>
-      </DialogContent>
+      </SheetContent>
       {/* Subscription Clients Modal */}
-      
-    </Dialog>
+    </Sheet>
   )
 }
