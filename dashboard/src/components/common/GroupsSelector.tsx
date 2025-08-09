@@ -7,7 +7,7 @@ import { Search } from 'lucide-react'
 import { useState } from 'react'
 import { Control, FieldPath, FieldValues, useController } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
+import { Link } from 'react-router'
 
 interface GroupsSelectorProps<T extends FieldValues> {
   control: Control<T>
@@ -16,14 +16,8 @@ interface GroupsSelectorProps<T extends FieldValues> {
   disabled?: boolean
 }
 
-export default function GroupsSelector<T extends FieldValues>({ 
-  control, 
-  name, 
-  onGroupsChange,
-  disabled = false 
-}: GroupsSelectorProps<T>) {
+export default function GroupsSelector<T extends FieldValues>({ control, name, onGroupsChange, disabled = false }: GroupsSelectorProps<T>) {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
 
   const { field } = useController({
@@ -104,16 +98,7 @@ export default function GroupsSelector<T extends FieldValues>({
                 <Trans
                   i18nKey={'templates.groupsExistingWarning'}
                   components={{
-                    a: (
-                      <a
-                        href="/groups"
-                        className="font-bold text-primary hover:underline"
-                        onClick={e => {
-                          e.preventDefault()
-                          navigate('/groups')
-                        }}
-                      />
-                    ),
+                    a: <Link to="/groups" className="font-bold text-primary hover:underline" />,
                   }}
                 />
               </span>
