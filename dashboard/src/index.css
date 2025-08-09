@@ -14,7 +14,7 @@
     --popover-foreground: var(--foreground);
     --border: 240 5% 80%;
     --input: 240 6% 91%;
-    --input-placeholder: 240 5% 70%;
+    --input-placeholder: 240 5% 60%;
     --primary: 216 46% 40%;
     --primary-foreground: 240 5% 98%;
     --secondary: 240 5% 90%;
@@ -74,9 +74,9 @@
     --card-foreground: var(--foreground);
     --popover: var(--background);
     --popover-foreground: var(--foreground);
-    --border: 0 0% 18%;
-    --input: 240 2% 16.5%;
-    --input-placeholder: 0 0 35%;
+    --border: 0 0% 27%;
+    --input: 240 2% 14%;
+    --input-placeholder: 0 0 40%;
     --primary: 216 46% 53%;
     --primary-foreground: 0 0% 5%;
     --secondary: 216 46% 53%;
