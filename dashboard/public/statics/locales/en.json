@@ -544,7 +544,7 @@
     "groups": "Groups",
     "userDataLimitStrategy": "Data Limit Reset Strategy",
     "resetUsage": "Reset Usage",
-    "groupsExistingWarning": "You dont create any <a>Groups</a> yet.",
+    "groupsExistingWarning": "No groups found. Please create a <a>group</a> before adding a user.",
     "deleteSuccess": "Template {{name}} removed successfully",
     "deleteFailed": "Failed to remove template {{name}}",
     "deleteUserTemplateTitle": "Remove User Template",
