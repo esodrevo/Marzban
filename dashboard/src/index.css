@@ -37,7 +37,7 @@
     --bg-accent-50: 210 40% 96%;
     --bg-muted-40: 210 40% 96%;
     --border-muted-40: 210 40% 96%;
-    --sidebar-background: 240 5% 90%;
+    --sidebar-background: 240 5% 93%;
     --sidebar-foreground: 240 5% 20%;
     --sidebar-primary: 216 46% 40%;
     --sidebar-primary-foreground: 240 5% 98%;
@@ -76,7 +76,7 @@
     --popover-foreground: var(--foreground);
     --border: 0 0% 18%;
     --input: 240 2% 16.5%;
-    --input-placeholder: 0 0 30%;
+    --input-placeholder: 0 0 35%;
     --primary: 216 46% 53%;
     --primary-foreground: 0 0% 5%;
     --secondary: 216 46% 53%;
@@ -194,6 +194,7 @@
 }
 
 @layer utilities {
+
   /* Scrollbar utility classes */
   .scrollbar-default {
     scrollbar-width: auto;
