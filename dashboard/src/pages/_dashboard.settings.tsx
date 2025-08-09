@@ -3,7 +3,7 @@ import { useAdmin } from '@/hooks/use-admin'
 import { cn } from '@/lib/utils'
 import { useGetSettings, useModifySettings } from '@/service/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { Bell, Database, ListTodo, LucideIcon, MessageCircle, Palette, Send, Settings as SettingsIcon, Webhook } from 'lucide-react'
+import { Bell, Database, ListTodo, LucideIcon, MessageCircle, Send, Settings as SettingsIcon, Webhook } from 'lucide-react'
 import { createContext, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Outlet, useLocation, useNavigate } from 'react-router'
@@ -44,11 +44,13 @@ const sudoTabs: Tab[] = [
   { id: 'discord', label: 'settings.discord.title', icon: MessageCircle, url: '/settings/discord' },
   { id: 'webhook', label: 'settings.webhook.title', icon: Webhook, url: '/settings/webhook' },
   { id: 'cleanup', label: 'settings.cleanup.title', icon: Database, url: '/settings/cleanup' },
-  { id: 'theme', label: 'theme.title', icon: Palette, url: '/settings/theme' },
+  // { id: 'theme', label: 'theme.title', icon: Palette, url: '/settings/theme' },
 ]
 
 // Define tabs for non-sudo admins (only theme settings)
-const nonSudoTabs: Tab[] = [{ id: 'theme', label: 'theme.title', icon: Palette, url: '/settings/theme' }]
+const nonSudoTabs: Tab[] = [
+  // { id: 'theme', label: 'theme.title', icon: Palette, url: '/settings/theme' }
+]
 
 export default function Settings() {
   const { t } = useTranslation()

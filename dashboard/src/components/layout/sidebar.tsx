@@ -11,32 +11,31 @@ import { useAdmin } from '@/hooks/use-admin'
 import useDirDetection from '@/hooks/use-dir-detection'
 import { getSystemStats } from '@/service/api'
 import {
-	ArrowUpDown,
-	Bell,
-	BookOpen,
-	Calendar,
-	Cpu,
-	Database,
-	FileText,
-	GithubIcon,
-	Layers,
-	LayoutDashboardIcon,
-	LayoutTemplate,
-	LifeBuoy,
-	ListTodo,
-	Lock,
-	MessageCircle,
-	Palette,
-	PieChart,
-	RssIcon,
-	Send,
-	Settings2,
-	Share2Icon,
-	UserCog,
-	Users2,
-	Settings,
-	UsersIcon,
-	Webhook,
+  ArrowUpDown,
+  Bell,
+  BookOpen,
+  Calendar,
+  Cpu,
+  Database,
+  FileText,
+  GithubIcon,
+  Layers,
+  LayoutDashboardIcon,
+  LayoutTemplate,
+  LifeBuoy,
+  ListTodo,
+  Lock,
+  MessageCircle,
+  PieChart,
+  RssIcon,
+  Send,
+  Settings,
+  Settings2,
+  Share2Icon,
+  UserCog,
+  Users2,
+  UsersIcon,
+  Webhook,
 } from 'lucide-react'
 import * as React from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -243,28 +242,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   url: '/settings/cleanup',
                   icon: Database,
                 },
-                {
-                  title: 'theme.title',
-                  url: '/settings/theme',
-                  icon: Palette,
-                },
+                // {
+                //   title: 'theme.title',
+                //   url: '/settings/theme',
+                //   icon: Palette,
+                // },
               ],
             },
           ]
         : [
             // For non-sudo admins, show only theme settings
-            {
-              title: 'settings.title',
-              url: '/settings',
-              icon: Settings2,
-              items: [
-                {
-                  title: 'theme.title',
-                  url: '/settings/theme',
-                  icon: Palette,
-                },
-              ],
-            },
+            // {
+            //   title: 'settings.title',
+            //   url: '/settings',
+            //   icon: Settings2,
+            //   items: [
+            //     {
+            //       title: 'theme.title',
+            //       url: '/settings/theme',
+            //       icon: Palette,
+            //     },
+            //   ],
+            // },
           ]),
     ],
     navSecondary: [
