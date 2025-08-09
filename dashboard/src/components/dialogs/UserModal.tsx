@@ -3,15 +3,17 @@ import GroupsSelector from '@/components/common/GroupsSelector'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { LoaderButton } from '@/components/ui/loader-button'
 import { Calendar as PersianCalendar } from '@/components/ui/persian-calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
+import { Tooltip, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
 import useDirDetection from '@/hooks/use-dir-detection'
 import useDynamicErrorHandler from '@/hooks/use-dynamic-errors.ts'
 import { cn } from '@/lib/utils'
@@ -29,6 +31,7 @@ import {
 } from '@/service/api'
 import { dateUtils, useRelativeExpiryDate } from '@/utils/dateFormatter'
 import { formatBytes } from '@/utils/formatByte'
+import { TooltipTrigger } from '@radix-ui/react-tooltip'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { CalendarIcon, Layers, ListStart, Lock, RefreshCcw, Users, X } from 'lucide-react'
 import React, { useEffect, useMemo, useState, useTransition } from 'react'
@@ -37,8 +40,6 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { v4 as uuidv4, v5 as uuidv5, v7 as uuidv7 } from 'uuid'
 import { z } from 'zod'
-import { Tooltip, TooltipContent, TooltipProvider } from '@/components/ui/tooltip'
-import { TooltipTrigger } from '@radix-ui/react-tooltip'
 
 interface UserModalProps {
   isDialogOpen: boolean
@@ -1107,11 +1108,11 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
           <form onSubmit={form.handleSubmit(onSubmit)} className="gay-4 flex flex-grow flex-col">
             <div className="flex-grow overflow-visible pt-4">
               <div className="flex w-full flex-col items-center justify-between gap-6 lg:items-start lg:pb-8">
-                <div className="w-full flex-[2] space-y-6">
+                <div className="flex w-full flex-col gap-6">
                   <div className="flex w-full items-center justify-center gap-4">
                     {/* Hide these fields if a template is selected */}
                     {!selectedTemplateId && (
-                      <div className={'grid w-full grid-cols-2 gap-4'}>
+                      <div className={'grid w-full gap-4'}>
                         <FormField
                           control={form.control}
                           name="username"
@@ -1175,39 +1176,9 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
                             )
                           }}
                         />
-                        {activeTab === 'groups' && (
-                          <FormField
-                            control={form.control}
-                            name="status"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t('status', { defaultValue: 'Status' })}</FormLabel>
-                                <FormControl>
-                                  <Select
-                                    onValueChange={value => {
-                                      field.onChange(value)
-                                      handleFieldChange('status', value)
-                                      handleFieldBlur('status')
-                                    }}
-                                    value={field.value || ''}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue placeholder={t('userDialog.selectStatus', { defaultValue: 'Select status' })} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="active">{t('status.active', { defaultValue: 'Active' })}</SelectItem>
-                                      {editingUser && <SelectItem value="disabled">{t('status.disabled', { defaultValue: 'Disabled' })}</SelectItem>}
-                                      <SelectItem value="on_hold">{t('status.on_hold', { defaultValue: 'On Hold' })}</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        )}
                       </div>
                     )}
+
                     {/* If template is selected, only show username field */}
                     {selectedTemplateId && (
                       <FormField
@@ -1260,9 +1231,126 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
                       />
                     )}
                   </div>
+
+                  {/* <div className="flex gap-2">
+                    <Checkbox
+                      id="select-template"
+                      checked={activeTab === 'templates'}
+                      onCheckedChange={checked => {
+                        setActiveTab(checked ? 'templates' : 'groups')
+                      }}
+                    />
+                    <Label htmlFor="select-template" className="font-normal">
+                      Use template
+                    </Label>
+                  </div> */}
+
+                  <div className="h-full w-full flex-1">
+                    {activeTab === 'templates' &&
+                      (templatesLoading ? (
+                        <div>{t('Loading...', { defaultValue: 'Loading...' })}</div>
+                      ) : (
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center justify-between">
+                            <Label>{t('userDialog.selectTemplate', { defaultValue: 'Template' })}</Label>
+                            <Button type="button" variant="link" className="h-auto p-0 text-sm font-light text-muted-foreground" onClick={setActiveTab.bind(null, 'groups')}>
+                              Switch to groups selection
+                            </Button>
+                          </div>
+                          <Select value={selectedTemplateId ? String(selectedTemplateId) : 'none'} onValueChange={handleTemplateSelect}>
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('userDialog.selectTemplatePlaceholder', { defaultValue: 'Choose a template' })} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="none">---</SelectItem>
+                              {(templatesData || []).map((template: any) => (
+                                <SelectItem key={template.id} value={String(template.id)}>
+                                  {template.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {selectedTemplateId && (
+                            <div className="text-sm text-muted-foreground">
+                              {t('userDialog.selectedTemplates', {
+                                count: 1,
+                                defaultValue: '1 template selected',
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    {activeTab === 'groups' && (
+                      <FormField
+                        control={form.control}
+                        name="group_ids"
+                        render={({ field }) => (
+                          <div className="flex flex-col gap-2">
+                            <div className="flex justify-between">
+                              <Label>Group</Label>
+                              <Button type="button" variant="link" className="h-auto p-0 text-sm font-light text-muted-foreground" onClick={setActiveTab.bind(null, 'templates')}>
+                                Use template
+                              </Button>
+                            </div>
+                            <GroupsSelector
+                              control={form.control}
+                              name="group_ids"
+                              onGroupsChange={groups => {
+                                field.onChange(groups)
+                                handleFieldChange('group_ids', groups)
+
+                                // Clear template selection when groups are selected
+                                if (groups.length > 0 && selectedTemplateId) {
+                                  setSelectedTemplateId(null)
+                                  clearTemplate()
+                                }
+
+                                // Trigger validation after group selection changes
+                                const isValid = validateAllFields({ ...form.getValues(), group_ids: groups }, touchedFields)
+                                setIsFormValid(isValid)
+                              }}
+                            />
+                          </div>
+                        )}
+                      />
+                    )}
+                  </div>
+
+                  {activeTab === 'groups' && (
+                    <FormField
+                      control={form.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t('status', { defaultValue: 'Status' })}</FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={value => {
+                                field.onChange(value)
+                                handleFieldChange('status', value)
+                                handleFieldBlur('status')
+                              }}
+                              value={field.value || ''}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder={t('userDialog.selectStatus', { defaultValue: 'Select status' })} />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="active">{t('status.active', { defaultValue: 'Active' })}</SelectItem>
+                                {editingUser && <SelectItem value="disabled">{t('status.disabled', { defaultValue: 'Disabled' })}</SelectItem>}
+                                <SelectItem value="on_hold">{t('status.on_hold', { defaultValue: 'On Hold' })}</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+
                   {/* Data limit and expire fields - show data_limit only when no template is selected */}
                   {activeTab === 'groups' && (
-                    <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
+                    <div className="grid w-full grid-cols-1 gap-6">
                       {!selectedTemplateId && (
                         <>
                           <FormField
@@ -1848,84 +1936,6 @@ export default function UserModal({ isDialogOpen, onOpenChange, form, editingUse
                       )}
                     </div>
                   )}
-                </div>
-                <div className="h-full w-full flex-1 space-y-6">
-                  <div className="w-full">
-                    <div className="flex items-center border-b">
-                      {tabs.map(tab => (
-                        <button
-                          key={tab.id}
-                          onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                          className={`relative flex-1 px-3 py-2 text-sm font-medium transition-colors ${
-                            activeTab === tab.id ? 'border-b-2 border-primary text-foreground' : 'text-muted-foreground hover:text-foreground'
-                          }`}
-                          type="button"
-                        >
-                          <div className="flex items-center justify-center gap-1.5">
-                            <tab.icon className="h-4 w-4" />
-                            <span>{t(tab.label)}</span>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                    <div className="py-2">
-                      {activeTab === 'templates' &&
-                        (templatesLoading ? (
-                          <div>{t('Loading...', { defaultValue: 'Loading...' })}</div>
-                        ) : (
-                          <div className="space-y-4 pt-4">
-                            <FormLabel>{t('userDialog.selectTemplate', { defaultValue: 'Select Template' })}</FormLabel>
-                            <Select value={selectedTemplateId ? String(selectedTemplateId) : 'none'} onValueChange={handleTemplateSelect}>
-                              <SelectTrigger>
-                                <SelectValue placeholder={t('userDialog.selectTemplatePlaceholder', { defaultValue: 'Choose a template' })} />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="none">---</SelectItem>
-                                {(templatesData || []).map((template: any) => (
-                                  <SelectItem key={template.id} value={String(template.id)}>
-                                    {template.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            {selectedTemplateId && (
-                              <div className="text-sm text-muted-foreground">
-                                {t('userDialog.selectedTemplates', {
-                                  count: 1,
-                                  defaultValue: '1 template selected',
-                                })}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      {activeTab === 'groups' && (
-                        <FormField
-                          control={form.control}
-                          name="group_ids"
-                          render={({ field }) => (
-                            <GroupsSelector
-                              control={form.control}
-                              name="group_ids"
-                              onGroupsChange={groups => {
-                                field.onChange(groups)
-                                handleFieldChange('group_ids', groups)
-
-                                // Clear template selection when groups are selected
-                                if (groups.length > 0 && selectedTemplateId) {
-                                  setSelectedTemplateId(null)
-                                  clearTemplate()
-                                }
-
-                                // Trigger validation after group selection changes
-                                const isValid = validateAllFields({ ...form.getValues(), group_ids: groups }, touchedFields)
-                                setIsFormValid(isValid)
-                              }}
-                            />
-                          )}
-                        />
-                      )}
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

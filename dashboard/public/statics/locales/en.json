@@ -1024,7 +1024,7 @@
     "nextPlanDataLimit": "Data Limit (GB)",
     "nextPlanExpire": "Expire (days)",
     "nextPlanAddRemainingTraffic": "Add Remaining Traffic",
-    "selectTemplate": "Select Template",
+    "selectTemplate": "Template",
     "selectTemplatePlaceholder": "Choose a template",
     "proxySettingsAccordion": "Proxy Settings",
     "proxySettings.vmess": "VMess",

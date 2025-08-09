@@ -54,13 +54,13 @@ export default function GroupsSelector<T extends FieldValues>({ control, name, o
   if (groupsLoading) {
     return (
       <FormItem>
-        <div className="space-y-4 pt-4">
+        <div className="space-y-4">
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Skeleton className="h-10 w-full pl-8" />
           </div>
           <Skeleton className="h-12 w-full" />
-          <div className="max-h-[200px] space-y-2 overflow-y-auto rounded-md border p-2">
+          <div className="max-h-[200px] space-y-2 overflow-y-auto rounded-md border">
             {Array.from({ length: 5 }).map((_, index) => (
               <div key={index} className="flex items-center gap-2 rounded-md p-2">
                 <Skeleton className="h-4 w-4" />
@@ -75,7 +75,7 @@ export default function GroupsSelector<T extends FieldValues>({ control, name, o
 
   return (
     <FormItem>
-      <div className="space-y-4 pt-4">
+      <div className="space-y-4">
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -90,7 +90,7 @@ export default function GroupsSelector<T extends FieldValues>({ control, name, o
           <Checkbox checked={filteredGroups.length > 0 && selectedGroups.length === filteredGroups.length} onCheckedChange={handleSelectAll} disabled={disabled} />
           <span className="text-sm font-medium">{t('selectAll', { defaultValue: 'Select All' })}</span>
         </label>
-        <div className="max-h-[200px] space-y-2 overflow-y-auto rounded-md border p-2">
+        <div className="max-h-[200px] space-y-2 overflow-y-auto rounded-md border">
           {filteredGroups.length === 0 ? (
             <div className="flex w-full flex-col gap-4 rounded-md border border-yellow-500 p-4">
               <span className="text-sm font-bold text-yellow-500">{t('warning')}</span>
@@ -105,7 +105,7 @@ export default function GroupsSelector<T extends FieldValues>({ control, name, o
             </div>
           ) : (
             filteredGroups.map((group: any) => (
-              <label key={group.id} className="flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-accent">
+              <label key={group.id} className="flex cursor-pointer items-center gap-2 rounded-md p-3 hover:bg-accent">
                 <Checkbox checked={selectedGroups.includes(group.id)} onCheckedChange={checked => handleGroupChange(!!checked, group.id)} disabled={disabled} />
                 <span className="text-sm">{group.name}</span>
               </label>
